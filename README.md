@@ -1,29 +1,38 @@
 ﻿**Stardew.ModBuildConfig** is an open-source NuGet package which automates the build configuration
 for crossplatform [Stardew Valley](http://stardewvalley.net/) mods that use SMAPI.
 
-The configuration detects the operating system (Linux, Mac, or Windows) and the Stardew Valley
-install path, and injects the correct references to Stardew Valley, SMAPI, and XNA/MonoGame.
-It also adds a `GamePath` variable which can be used to automate mod installation during testing
-if desired.
+The configuration...
 
-## Contents
-* [Installation](#installation)
-* [Configuration](#configuration)
-* [Versions](#versions)
-* [See also](#see-also)
+1. detects the operating system (Linux, Mac, or Windows) and the Stardew Valley install path;
+2. injects the correct references to Stardew Valley, SMAPI, and XNA/MonoGame;
+3. (on Windows) configures Visual Studio so you can launch the game for debugging;
+4. and adds a `GamePath` variable which can be used to automate mod installation during testing
+   if desired.
 
 ## Installation
-### New mod
-_TODO_
+### Creating a new mod
+1. Create an empty library project.
+2. Reference the `Pathoschild.Stardew.ModBuildConfig` NuGet package.
+3. [Write your code](http://canimod.com/guides/creating-a-smapi-mod).
+4. Compile on any platform.
 
 ### Migrating an existing mod
-_TODO_
+1. Remove any references to `Microsoft.Xna.*`, Stardew Valley, `StardewModdingAPI`, and xTile.
+2. Reference the `Pathoschild.Stardew.ModBuildConfig` NuGet package.
+3. Compile on any platform.
 
 ## Configuration
-_TODO_
+### Custom game path
+If you customised where Stardew Valley is installed, you can add your path to the list to try.
 
-## Versions
-_TODO_
+1. Get the full path to the directory containing the Stardew Valley executable.
+2. Add this section to your `.csproj` file (anywhere before the added `<Import` line):
+   
+   ```
+   <PropertyGroup>
+     <GamePath>C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
+   </PropertyGroup>
+   ```
 
 ## See also
 _TODO_
