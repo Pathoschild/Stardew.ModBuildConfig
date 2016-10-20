@@ -12,13 +12,13 @@ The configuration...
 ## Installation
 ### Creating a new mod
 1. Create an empty library project.
-2. Reference the `Pathoschild.Stardew.ModBuildConfig` NuGet package.
+2. Reference the [`Pathoschild.Stardew.ModBuildConfig` NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModdingBuildConfig).
 3. [Write your code](http://canimod.com/guides/creating-a-smapi-mod).
 4. Compile on any platform.
 
 ### Migrating an existing mod
 1. Remove any references to `Microsoft.Xna.*`, Stardew Valley, `StardewModdingAPI`, and xTile.
-2. Reference the `Pathoschild.Stardew.ModBuildConfig` NuGet package.
+2. Reference the [`Pathoschild.Stardew.ModBuildConfig` NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModdingBuildConfig).
 3. Compile on any platform.
 
 ## Configuration
@@ -35,6 +35,5 @@ If you customised where Stardew Valley is installed, you can add your path to th
    ```
 
 ## See also
-_TODO_
-* <s>NuGet package</s>
+* [NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModdingBuildConfig)
 * <s>Discussion thread</s>
