@@ -53,9 +53,8 @@
     </Otherwise>
   </Choose>
 
-  <!-- Validate game path & automate mod package -->
+  <!-- if game path is invalid, show one user-friendly error instead of a slew of reference errors -->
   <Target Name="BeforeBuild">
-    <Error Text="Failed to find the game install path automatically; edit the *.csproj file and manually set the &lt;GamePath&gt; setting to the directory containing the Stardew Valley executable." Condition="!Exists('$(GamePath)')" />
+    <Error Condition="!Exists('$(GamePath)')" Text="Failed to find the game install path automatically; edit the *.csproj file and manually add a &lt;GamePath&gt; setting with the full directory path containing the Stardew Valley executable." />
   </Target>
-
 </Project>
