@@ -1,9 +1,18 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!-- find game install path -->
   <PropertyGroup>
-    <GamePath>C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
+    <!-- injected by Silverplum -->
+    <GamePath Condition="!Exists('$(GamePath)')">$(STARDEWVALLEY_DIR)</GamePath>
+    
+    <!-- Linux -->
+    <GamePath Condition="!Exists('$(GamePath)')">~/.local/share/Steam/steamapps/common/Stardew Valley</GamePath>
+
+    <!-- Mac -->
+    <GamePath Condition="!Exists('$(GamePath)')">~/Library/Application Support/Steam/steamapps/common/Stardew Valley/Contents/MacOS</GamePath>
+
+    <!-- Windows -->
+    <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
     <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley</GamePath>
-    <GamePath Condition="!Exists('$(GamePath)')">~\Library\Application Support\Steam\steamapps\common\Stardew Valley\Contents\MacOS</GamePath>
   </PropertyGroup>
 
   <!-- set up configuration -->
