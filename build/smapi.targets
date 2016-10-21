@@ -5,6 +5,7 @@
     <GamePath Condition="!Exists('$(GamePath)')">$(STARDEWVALLEY_DIR)</GamePath>
     
     <!-- Linux -->
+    <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/GOG Games/Stardew Valley/game</GamePath>
     <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/.local/share/Steam/steamapps/common/Stardew Valley</GamePath>
 
     <!-- Mac -->
