@@ -34,6 +34,11 @@ If you customised where Stardew Valley is installed, you can add your path to th
    </PropertyGroup>
    ```
 
+### Compatibility with mod builders
+The configuration is designed for compatibility with third-party mod compilers. [Silverplum](https://github.com/rumangerst/SilVerPLuM)
+is officially supported, and you can inject the `GAMEPATH` environment variable to override the
+detected game path.
+
 ## See also
 * [NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModdingBuildConfig)
 * <s>Discussion thread</s>
