@@ -12,13 +12,13 @@ The configuration...
 ## Installation
 ### Creating a new mod
 1. Create an empty library project.
-2. Reference the [`Pathoschild.Stardew.ModBuildConfig` NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModdingBuildConfig).
+2. Reference the [`Pathoschild.Stardew.ModBuildConfig` NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModBuildConfig).
 3. [Write your code](http://canimod.com/guides/creating-a-smapi-mod).
 4. Compile on any platform.
 
 ### Migrating an existing mod
 1. Remove any references to `Microsoft.Xna.*`, Stardew Valley, `StardewModdingAPI`, and xTile.
-2. Reference the [`Pathoschild.Stardew.ModBuildConfig` NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModdingBuildConfig).
+2. Reference the [`Pathoschild.Stardew.ModBuildConfig` NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModBuildConfig).
 3. Compile on any platform.
 
 ## Configuration
@@ -40,5 +40,5 @@ is officially supported, and you can inject the `GAMEPATH` environment variable 
 detected game path.
 
 ## See also
-* [NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModdingBuildConfig)
+* [NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModBuildConfig)
 * <s>Discussion thread</s>
