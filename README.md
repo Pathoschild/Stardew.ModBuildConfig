@@ -62,7 +62,7 @@ You can define it...
   `GAME_PLATFORM_WINDOWS`.
   * <small>In Visual Studio: right-click on the project and choose _Properties_. Click the _Build_
     tab, and enter the constants into the _Conditional compilation symbols_ field.</small>
-  * <small>In MonoDevelop: right-click on the project and choose _Options. Click the
+  * <small>In MonoDevelop: right-click on the project and choose _Options_. Click the
     _Build » Compiler_ tab, and enter the constants into the _Define Symbols_ field.</small>
 
 ### Compatibility with mod builders
