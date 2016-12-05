@@ -1,6 +1,12 @@
 ﻿**Stardew.ModBuildConfig** is an open-source NuGet package which automates the build configuration
 for crossplatform [Stardew Valley](http://stardewvalley.net/) mods that use SMAPI.
 
+## Contents
+* [Usage](#usage)
+* [Installation](#installation)
+* [Configuration](#configuration)
+* [Simplify mod development](#simplify-mod-development)
+
 ## Usage
 Basically this package lets you write your mod once, and compile it on any computer. It detects
 your current platform (Linux, Mac, or Windows) and game path, and injects the right references
@@ -71,6 +77,36 @@ is officially supported, and mod builds can set the following environment variab
 
 * `GAMEPATH`: overrides the Stardew Valley install path.
 * `GAMEPLATFORM`: overrides the detected platform. Should be only of `Linux`, `Mac`, or `Windows`.
+
+## Simplify mod development
+### Package your mod into the game directory automatically
+During development, it's helpful to have the mod files packaged into your `Mods` directory automatically each time you build. To do that:
+
+1. Edit your mod's `.csproj` file.
+2. Add this block of code at the bottom, right above the closing `</Project>` tag:
+
+   ```cs
+   <Target Name="AfterBuild">
+      <PropertyGroup>
+         <ModPath>$(GamePath)\Mods\$(TargetName)</ModPath>
+      </PropertyGroup>
+      <Copy SourceFiles="$(TargetDir)\$(TargetName).dll" DestinationFolder="$(ModPath)" />
+      <Copy SourceFiles="$(TargetDir)\$(TargetName).pdb" DestinationFolder="$(ModPath)" Condition="Exists('$(TargetDir)\$(TargetName).pdb')" />
+      <Copy SourceFiles="$(TargetDir)\$(TargetName).dll.mdb" DestinationFolder="$(ModPath)" Condition="Exists('$(TargetDir)\$(TargetName).dll.mdb')" />
+      <Copy SourceFiles="$(ProjectDir)manifest.json" DestinationFolder="$(ModPath)" />
+   </Target>
+   ```
+3. Optionally, edit the `<ModPath>` value to change the name, or add any additional files your mod needs.
+
+That's it! Each time you build, the files in `<game path>\Mods\<mod name>` will be updated.
+
+### Debugging
+Debugging into your mod code when the game is running is pretty straightforward, since this package injects some of the configuration automatically. To do that:
+
+1. [Package your mod into the game directory automatically](#package-your-mod-into-the-game-directory-automatically).
+2. Launch the project with debugging in Visual Studio or MonoDevelop.
+
+This will deploy your mod files into the game directory, launch SMAPI, and attach a debugger automatically. Now you can step through your code, set breakpoints, etc.
 
 ## Versions
 * 1.0: initial release.
