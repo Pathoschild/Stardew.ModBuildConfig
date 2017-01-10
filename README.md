@@ -4,7 +4,7 @@ for crossplatform [Stardew Valley](http://stardewvalley.net/) mods that use SMAP
 ## Contents
 * [Usage](#usage)
 * [Installation](#installation)
-* [Configuration](#configuration)
+* [Custom game path](#custom-game-path)
 * [Simplify mod development](#simplify-mod-development)
 
 ## Usage
@@ -32,21 +32,21 @@ More specifically, the configuration...
 2. Reference the [`Pathoschild.Stardew.ModBuildConfig` NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModBuildConfig).
 3. Compile on any platform.
 
-## Configuration
-### Custom game path
-If you customised where Stardew Valley is installed, you can specify where it is.
+## Custom game path
+The package should automatically detect your game path. If it can't for some reason, you
+can specify it manually.
 
-1. Get the full path to the directory containing the Stardew Valley executable.
-2. Add this section to your `.csproj` file (anywhere before the added `<Import` line):
+1. Get the full folder path containing the Stardew Valley executable.
+2. Add this to your `.csproj` file under the `<Project` line (with the correct game path):
    
-   ```
+   ```xml
    <PropertyGroup>
      <GamePath>C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
    </PropertyGroup>
    ```
 
-The configuration will check your custom path first, then fall back to the default paths. (That way
-you can still compile it normally on a different computer.)
+The configuration will check your custom path first, then fall back to the default paths (so it'll
+still compile on a different computer).
 
 ## Simplify mod development
 ### Package your mod into the game directory automatically
@@ -55,7 +55,7 @@ During development, it's helpful to have the mod files packaged into your `Mods`
 1. Edit your mod's `.csproj` file.
 2. Add this block of code at the bottom, right above the closing `</Project>` tag:
 
-   ```cs
+   ```xml
    <Target Name="AfterBuild">
       <PropertyGroup>
          <ModPath>$(GamePath)\Mods\$(TargetName)</ModPath>
