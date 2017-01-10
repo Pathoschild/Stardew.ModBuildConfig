@@ -3,16 +3,9 @@
   ## select target OS
   #######-->
   <PropertyGroup>
-    <!-- from override -->
-    <GamePlatform Condition="$(GamePlatform) != 'Linux' AND $(GamePlatform) != 'Mac' AND $(GamePlatform) != 'Windows'"></GamePlatform>
-    <GamePlatform Condition="$(DefineConstants.Contains('GAME_PLATFORM_LINUX'))">Linux</GamePlatform>
-    <GamePlatform Condition="$(DefineConstants.Contains('GAME_PLATFORM_MAC'))">Mac</GamePlatform>
-    <GamePlatform Condition="$(DefineConstants.Contains('GAME_PLATFORM_WINDOWS'))">Windows</GamePlatform>
-
-    <!-- from OS -->
-    <GamePlatform Condition="$(GamePlatform) == '' AND $(OS) == 'Unix'">Linux</GamePlatform>
-    <GamePlatform Condition="$(GamePlatform) == '' AND $(OS) == 'OSX'">Mac</GamePlatform>
-    <GamePlatform Condition="$(GamePlatform) == '' AND $(OS) == 'Windows_NT'">Windows</GamePlatform>
+    <GamePlatform Condition="$(OS) == 'Unix'">Linux</GamePlatform>
+    <GamePlatform Condition="$(OS) == 'OSX'">Mac</GamePlatform>
+    <GamePlatform Condition="$(OS) == 'Windows_NT'">Windows</GamePlatform>
   </PropertyGroup>
 
   <!--######
@@ -27,8 +20,8 @@
     <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/Library/Application Support/Steam/steamapps/common/Stardew Valley/Contents/MacOS</GamePath>
 
     <!-- Windows -->
-    <GamePath Condition="!Exists('$(GamePath)' )">C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
-    <GamePath Condition="!Exists('$(GamePath)' )">C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley</GamePath>
+    <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
+    <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley</GamePath>
     <GamePath Condition="!Exists('$(GamePath)') AND '$(GamePlatform)' == 'Windows'">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\GOG.com\Games\1453375253', 'PATH', null, RegistryView.Registry32))</GamePath>
     <GamePath Condition="!Exists('$(GamePath)') AND '$(GamePlatform)' == 'Windows'">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 413150', 'InstallLocation', null, RegistryView.Registry64, RegistryView.Registry32))</GamePath>
   </PropertyGroup>

@@ -48,29 +48,6 @@ If you customised where Stardew Valley is installed, you can specify where it is
 The configuration will check your custom path first, then fall back to the default paths. (That way
 you can still compile it normally on a different computer.)
 
-### Target platform
-By default the build configuration will target your current platform (e.g. Linux, Mac, or Windows).
-If you're compiling it for a different platform (and have the required dependencies installed), you
-can manually override the platform detection.
-
-You can define it...
-
-* in your `.csproj` (anywhere before the added `<Import` line). Valid values are `Linux`, `Mac`, or
-  `Windows`.
-   
-   ```
-   <PropertyGroup>
-     <GamePlatform>Windows</GamePlatform>
-   </PropertyGroup>
-   ```
-
-* _or_ by setting one of these compile constant: `GAME_PLATFORM_LINUX`, `GAME_PLATFORM_MAC`, or
-  `GAME_PLATFORM_WINDOWS`.
-  * <small>In Visual Studio: right-click on the project and choose _Properties_. Click the _Build_
-    tab, and enter the constants into the _Conditional compilation symbols_ field.</small>
-  * <small>In MonoDevelop: right-click on the project and choose _Options_. Click the
-    _Build » Compiler_ tab, and enter the constants into the _Define Symbols_ field.</small>
-
 ## Simplify mod development
 ### Package your mod into the game directory automatically
 During development, it's helpful to have the mod files packaged into your `Mods` directory automatically each time you build. To do that:
@@ -105,6 +82,7 @@ This will deploy your mod files into the game directory, launch SMAPI, and attac
 1.3:
 * Fixed non-default game paths on 32-bit Windows.
 * Removed support for SilVerPLuM (discontinued).
+* Removed support for overriding the target platform (never used).
 
 1.2:
 * Added support for non-default game paths on Windows by reading the registry.
