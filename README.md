@@ -71,13 +71,6 @@ You can define it...
   * <small>In MonoDevelop: right-click on the project and choose _Options_. Click the
     _Build » Compiler_ tab, and enter the constants into the _Define Symbols_ field.</small>
 
-### Compatibility with mod builders
-The configuration is designed for compatibility with third-party mod compilers. [Silverplum](https://github.com/rumangerst/SilVerPLuM)
-is officially supported, and mod builds can set the following environment variables:
-
-* `GAMEPATH`: overrides the Stardew Valley install path.
-* `GAMEPLATFORM`: overrides the detected platform. Should be only of `Linux`, `Mac`, or `Windows`.
-
 ## Simplify mod development
 ### Package your mod into the game directory automatically
 During development, it's helpful to have the mod files packaged into your `Mods` directory automatically each time you build. To do that:
@@ -109,8 +102,21 @@ Debugging into your mod code when the game is running is pretty straightforward,
 This will deploy your mod files into the game directory, launch SMAPI, and attach a debugger automatically. Now you can step through your code, set breakpoints, etc.
 
 ## Versions
-* 1.0: initial release.
-* 1.1: added support for targeting platforms.
+1.3:
+* Fixed non-default game paths on 32-bit Windows.
+* Removed support for SilVerPLuM (discontinued).
+
+1.2:
+* Added support for non-default game paths on Windows by reading the registry.
+
+1.1:
+* Added support for overriding the target platform.
+
+1.0:
+* Initial release.
+* Added support for detecting the game path automatically.
+* Added support for injecting XNA/MonoGame references automatically based on the OS.
+* Added support for mod builders like SilVerPLuM.
 
 ## See also
 * [NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModBuildConfig)

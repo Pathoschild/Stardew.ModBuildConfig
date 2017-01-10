@@ -11,7 +11,7 @@
     <projectUrl>https://github.com/Pathoschild/Stardew.ModBuildConfig</projectUrl>
     <iconUrl>https://raw.githubusercontent.com/Pathoschild/Stardew.ModBuildConfig/1.3/assets/nuget-icon.png</iconUrl>
     <description>Automates the build configuration for a crossplatform Stardew Valley mod that uses SMAPI.</description>
-    <releaseNotes>Fix game path detection on 32-bit Windows.</releaseNotes>
+    <releaseNotes>Fix game path detection on 32-bit Windows; remove support for SilVerPLuM (discontinued).</releaseNotes>
   </metadata>
   <files>
     <file src="build/smapi.targets" target="build/Pathoschild.Stardew.ModBuildConfig.targets" />
