@@ -84,13 +84,16 @@ The configuration will check your custom path first, then fall back to the defau
 still compile on a different computer).
 
 ## Versions
-1.3:
+1.4:
 * Fixed detection of non-default game paths on 32-bit Windows.
 * Removed support for SilVerPLuM (discontinued).
 * Removed support for overriding the target platform (no longer needed since SMAPI crossplatforms mods automatically).
 
-1.2:
+1.3:
 * Added support for non-default game paths on Windows.
+
+1.2:
+* Exclude game binaries from mod build output.
 
 1.1:
 * Added support for overriding the target platform.
