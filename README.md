@@ -1,52 +1,35 @@
 ﻿**Stardew.ModBuildConfig** is an open-source NuGet package which automates the build configuration
-for crossplatform [Stardew Valley](http://stardewvalley.net/) mods that use SMAPI.
+for [Stardew Valley](http://stardewvalley.net/) [SMAPI](https://github.com/Pathoschild/SMAPI) mods.
+
+The package...
+
+* lets you write your mod once, and compile it on any computer. It detects the current platform
+  (Linux, Mac, or Windows) and game install path, and injects the right references automatically.
+* configures Visual Studio so you can debug into the mod code when the game is running (_Windows
+  only_).
+* packages the mod automatically into the game's mod folder when you build the code (_optional_).
+
 
 ## Contents
-* [Usage](#usage)
-* [Installation](#installation)
-* [Custom game path](#custom-game-path)
+* [Install](#install)
 * [Simplify mod development](#simplify-mod-development)
+* [Troubleshoot](#troubleshoot)
+* [Versions](#versions)
 
-## Usage
-Basically this package lets you write your mod once, and compile it on any computer. It detects
-your current platform (Linux, Mac, or Windows) and game path, and injects the right references
-automatically. You can also target a specific platform to create a mod package compatible with that
-platform.
+## Install
+**When creating a new mod:**
 
-More specifically, the configuration...
-
-1. detects the operating system and Stardew Valley path;
-2. injects the right references to Stardew Valley, SMAPI, and XNA/MonoGame for your platform;
-3. configures Visual Studio so you can launch the game for debugging (_Windows only_);
-4. and adds a `GamePath` variable which can be used to script mod packaging if desired.
-
-## Installation
-### Creating a new mod
 1. Create an empty library project.
 2. Reference the [`Pathoschild.Stardew.ModBuildConfig` NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModBuildConfig).
 3. [Write your code](http://canimod.com/guides/creating-a-smapi-mod).
 4. Compile on any platform.
 
-### Migrating an existing mod
-1. Remove any references to `Microsoft.Xna.*`, Stardew Valley, `StardewModdingAPI`, and xTile.
+**When migrating an existing mod:**
+
+1. Remove any project references to `Microsoft.Xna.*`, `MonoGame`, Stardew Valley,
+   `StardewModdingAPI`, and `xTile`.
 2. Reference the [`Pathoschild.Stardew.ModBuildConfig` NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModBuildConfig).
 3. Compile on any platform.
-
-## Custom game path
-The package should automatically detect your game path. If it can't for some reason, you
-can specify it manually.
-
-1. Get the full folder path containing the Stardew Valley executable.
-2. Add this to your `.csproj` file under the `<Project` line (with the correct game path):
-   
-   ```xml
-   <PropertyGroup>
-     <GamePath>C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
-   </PropertyGroup>
-   ```
-
-The configuration will check your custom path first, then fall back to the default paths (so it'll
-still compile on a different computer).
 
 ## Simplify mod development
 ### Package your mod into the game directory automatically
@@ -70,22 +53,44 @@ During development, it's helpful to have the mod files packaged into your `Mods`
 
 That's it! Each time you build, the files in `<game path>\Mods\<mod name>` will be updated.
 
-### Debugging
-Debugging into your mod code when the game is running is pretty straightforward, since this package injects some of the configuration automatically. To do that:
+### Debug into the mod code
+Stepping into your mod code when the game is running is straightforward, since this package injects the configuration automatically. To do it:
 
 1. [Package your mod into the game directory automatically](#package-your-mod-into-the-game-directory-automatically).
 2. Launch the project with debugging in Visual Studio or MonoDevelop.
 
 This will deploy your mod files into the game directory, launch SMAPI, and attach a debugger automatically. Now you can step through your code, set breakpoints, etc.
 
+## Troubleshoot
+### "Failed to find the game install path"
+If you see this error:
+
+> Failed to find the game install path automatically; edit the *.csproj file and manually add a
+> &lt;GamePath&gt; setting with the full directory path containing the Stardew Valley executable.
+
+...the package couldn't find your game install path automatically. You'll need to specify the
+game location:
+
+1. Get the full folder path containing the Stardew Valley executable.
+2. Add this to your `.csproj` file under the `<Project` line (with the correct game path):
+   
+   ```xml
+   <PropertyGroup>
+     <GamePath>C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
+   </PropertyGroup>
+   ```
+
+The configuration will check your custom path first, then fall back to the default paths (so it'll
+still compile on a different computer).
+
 ## Versions
 1.3:
-* Fixed non-default game paths on 32-bit Windows.
+* Fixed detection of non-default game paths on 32-bit Windows.
 * Removed support for SilVerPLuM (discontinued).
-* Removed support for overriding the target platform (never used).
+* Removed support for overriding the target platform (no longer needed since SMAPI crossplatforms mods automatically).
 
 1.2:
-* Added support for non-default game paths on Windows by reading the registry.
+* Added support for non-default game paths on Windows.
 
 1.1:
 * Added support for overriding the target platform.
@@ -95,7 +100,3 @@ This will deploy your mod files into the game directory, launch SMAPI, and attac
 * Added support for detecting the game path automatically.
 * Added support for injecting XNA/MonoGame references automatically based on the OS.
 * Added support for mod builders like SilVerPLuM.
-
-## See also
-* [NuGet package](https://www.nuget.org/packages/Pathoschild.Stardew.ModBuildConfig)
-* <s>Discussion thread</s>
