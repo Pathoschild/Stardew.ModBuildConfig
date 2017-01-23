@@ -1,5 +1,11 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!--######
+  ## import global settings
+  #######-->
+  <Import Condition="$(OS) != 'Windows_NT' AND Exists('$(HOME)\stardewvalley.targets')" Project="$(HOME)\stardewvalley.targets" />
+  <Import Condition="$(OS) == 'Windows_NT' AND Exists('$(USERPROFILE)\stardewvalley.targets')" Project="$(USERPROFILE)\stardewvalley.targets" />
+
+  <!--######
   ## select target OS
   #######-->
   <PropertyGroup>
@@ -94,6 +100,6 @@
   #######-->
   <Target Name="BeforeBuild">
     <!-- if game path is invalid, show one user-friendly error instead of a slew of reference errors -->
-    <Error Condition="!Exists('$(GamePath)')" Text="Failed to find the game install path automatically; edit the *.csproj file and manually add a &lt;GamePath&gt; setting with the full directory path containing the Stardew Valley executable." />
+    <Error Condition="!Exists('$(GamePath)')" Text="Failed to find the game install path. See https://github.com/Pathoschild/Stardew.ModBuildConfig#troubleshoot for help." />
   </Target>
 </Project>

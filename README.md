@@ -63,28 +63,51 @@ This will deploy your mod files into the game directory, launch SMAPI, and attac
 
 ## Troubleshoot
 ### "Failed to find the game install path"
-If you see this error:
+That error means the package couldn't figure out where the game is installed. You need to specify
+the game location yourself. There's two ways to do that:
 
-> Failed to find the game install path automatically; edit the *.csproj file and manually add a
-> &lt;GamePath&gt; setting with the full directory path containing the Stardew Valley executable.
+* **Option 1: set the path in the project file.**  
+  _(You'll need to do it for every project that uses the package.)_
+  1. Get the folder path containing the Stardew Valley `.exe` file.
+  2. Add this to your `.csproj` file under the `<Project` line:
 
-...the package couldn't find your game install path automatically. You'll need to specify the
-game location:
+     ```xml
+     <PropertyGroup>
+       <GamePath>PATH_HERE</GamePath>
+     </PropertyGroup>
+     ```
 
-1. Get the full folder path containing the Stardew Valley executable.
-2. Add this to your `.csproj` file under the `<Project` line (with the correct game path):
-   
-   ```xml
-   <PropertyGroup>
-     <GamePath>C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
-   </PropertyGroup>
-   ```
+  3. Replace `PATH_HERE` with your custom game install path.
+
+* **Option 2: set the path globally.**  
+  _This will apply to every project that uses version 1.5+ of package._
+
+  1. Get the full folder path containing the Stardew Valley executable.
+  2. Create this file path:
+  
+     platform  | path
+     --------- | ----
+     Linux/Mac | `~/stardewvalley.targets`
+     Windows   | `%USERPROFILE%\stardewvalley.targets`
+
+  3. Save the file with this content:
+
+     ```xml
+     <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+        <PropertyGroup>
+          <GamePath>PATH_HERE</GamePath>
+        </PropertyGroup>
+     </Project>
+     ```
+
+  4. Replace `PATH_HERE` with your custom game install path.
 
 The configuration will check your custom path first, then fall back to the default paths (so it'll
 still compile on a different computer).
 
 ## Versions
 1.5 (upcoming):
+* Added support for setting a custom game path globally.
 * Added default GOG path on Mac.
 
 1.4:
