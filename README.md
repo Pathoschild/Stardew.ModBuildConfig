@@ -84,6 +84,9 @@ The configuration will check your custom path first, then fall back to the defau
 still compile on a different computer).
 
 ## Versions
+1.5 (upcoming):
+* Added default GOG path on Mac.
+
 1.4:
 * Fixed detection of non-default game paths on 32-bit Windows.
 * Removed support for SilVerPLuM (discontinued).
