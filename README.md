@@ -53,7 +53,7 @@ During development, it's helpful to have the mod files packaged into your `Mods`
 
 That's it! Each time you build, the files in `<game path>\Mods\<mod name>` will be updated.
 
-### Debug into the mod code
+### Debug into the mod code (Windows Only)
 Stepping into your mod code when the game is running is straightforward, since this package injects the configuration automatically. To do it:
 
 1. [Package your mod into the game directory automatically](#package-your-mod-into-the-game-directory-automatically).
