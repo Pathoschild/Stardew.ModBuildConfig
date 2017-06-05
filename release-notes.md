@@ -1,4 +1,7 @@
 ## Release notes
+### 1.6
+* Added a build error if a game folder is found, but doesn't contain Stardew Valley or SMAPI.
+
 ### 1.5
 * Added support for setting a custom game path globally.
 * Added default GOG path on Mac.

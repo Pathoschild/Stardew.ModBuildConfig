@@ -101,5 +101,8 @@
   <Target Name="BeforeBuild">
     <!-- if game path is invalid, show one user-friendly error instead of a slew of reference errors -->
     <Error Condition="!Exists('$(GamePath)')" Text="Failed to find the game install path. See https://github.com/Pathoschild/Stardew.ModBuildConfig#troubleshoot for help." />
+    <Error Condition="'$(GamePlatform)' == 'Windows' AND !Exists('$(GamePath)\Stardew Valley.exe')" Text="Found a game folder at $(GamePath), but it doesn't contain Stardew Valley. You should delete this folder if it's empty." />
+    <Error Condition="'$(GamePlatform)' != 'Windows' AND !Exists('$(GamePath)\StardewValley.exe')" Text="Found a game folder at $(GamePath), but it doesn't contain Stardew Valley. You should delete this folder if it's empty." />
+    <Error Condition="!Exists('$(GamePath)\StardewModdingAPI.exe')" Text="Found a game folder at $(GamePath), but it doesn't contain SMAPI." />
   </Target>
 </Project>
