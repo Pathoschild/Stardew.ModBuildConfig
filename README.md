@@ -9,7 +9,6 @@ The package...
   only_).
 * packages the mod automatically into the game's mod folder when you build the code (_optional_).
 
-
 ## Contents
 * [Install](#install)
 * [Simplify mod development](#simplify-mod-development)
