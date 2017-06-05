@@ -1,5 +1,6 @@
 ## Release notes
 ### 1.6
+* Added support for deploying mod files into `Mods` automatically.
 * Added a build error if a game folder is found, but doesn't contain Stardew Valley or SMAPI.
 
 ### 1.5

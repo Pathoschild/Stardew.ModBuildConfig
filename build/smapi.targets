@@ -105,4 +105,29 @@
     <Error Condition="'$(GamePlatform)' != 'Windows' AND !Exists('$(GamePath)\StardewValley.exe')" Text="Found a game folder at $(GamePath), but it doesn't contain Stardew Valley. You should delete this folder if it's empty." />
     <Error Condition="!Exists('$(GamePath)\StardewModdingAPI.exe')" Text="Found a game folder at $(GamePath), but it doesn't contain SMAPI." />
   </Target>
+
+  <!--######
+  ## deploy mod files
+  #######-->
+  <Target Name="AfterBuild" Condition="'$(DeployModFolderName)' != ''">
+    <!--generate paths-->
+    <PropertyGroup>
+      <ModDeployPath>$(GamePath)\Mods\$(DeployModFolderName)</ModDeployPath>
+      <FallbackManifestPath>$(ProjectDir)\manifest.json</FallbackManifestPath>
+    </PropertyGroup>
+    <ItemGroup>
+      <BuildFiles Include="$(TargetDir)\**\*.*" />
+      <FallbackTranslationFiles Include="$(ProjectDir)\i18n\*.json" />
+    </ItemGroup>
+
+    <!--validate-->
+    <Error Text="Could not deploy mod automatically because no build output was found." Condition="'@(BuildFiles)' == ''" />
+    <Error Text="Could not deploy mod automatically because no manifest.json was found in the project or build output." Condition="!Exists('$(TargetDir)\manifest.json') AND !Exists('$(FallbackManifestPath)')" />
+
+    <!-- copy mod files -->
+    <Message Text="Deploying mod to $(ModDeployPath)..." Importance="high" />
+    <Copy SourceFiles="@(BuildFiles)" DestinationFolder="$(ModDeployPath)\%(RecursiveDir)" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="$(FallbackManifestPath)" DestinationFolder="$(ModDeployPath)" Condition="!Exists('$(TargetDir)\manifest.json')" />
+    <Copy SourceFiles="@(FallbackTranslationFiles)" DestinationFolder="$(ModDeployPath)\i18n\%(RecursiveDir)" Condition="!Exists('$(TargetDir)\i18n')" />
+  </Target>
 </Project>
