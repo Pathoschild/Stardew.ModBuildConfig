@@ -66,20 +66,7 @@ This will deploy your mod files into the game directory, launch SMAPI, and attac
 That error means the package couldn't figure out where the game is installed. You need to specify
 the game location yourself. There's two ways to do that:
 
-* **Option 1: set the path in the project file.**  
-  _(You'll need to do it for every project that uses the package.)_
-  1. Get the folder path containing the Stardew Valley `.exe` file.
-  2. Add this to your `.csproj` file under the `<Project` line:
-
-     ```xml
-     <PropertyGroup>
-       <GamePath>PATH_HERE</GamePath>
-     </PropertyGroup>
-     ```
-
-  3. Replace `PATH_HERE` with your custom game install path.
-
-* **Option 2: set the path globally.**  
+* **Option 1: set the path globally.**  
   _This will apply to every project that uses version 1.5+ of package._
 
   1. Get the full folder path containing the Stardew Valley executable.
@@ -104,6 +91,19 @@ the game location yourself. There's two ways to do that:
 
 The configuration will check your custom path first, then fall back to the default paths (so it'll
 still compile on a different computer).
+
+* **Option 2: set the path in the project file.**  
+  _(You'll need to do it for every project that uses the package.)_
+  1. Get the folder path containing the Stardew Valley `.exe` file.
+  2. Add this to your `.csproj` file under the `<Project` line:
+
+     ```xml
+     <PropertyGroup>
+       <GamePath>PATH_HERE</GamePath>
+     </PropertyGroup>
+     ```
+
+  3. Replace `PATH_HERE` with your custom game install path.
 
 ## Versions
 1.5 (upcoming):
