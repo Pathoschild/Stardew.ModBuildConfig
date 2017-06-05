@@ -1,0 +1,5 @@
+# Visual Studio cache/options
+.vs/
+
+# NuGet packages
+*.nupkg
