@@ -9,14 +9,13 @@
   ## find platform + game path
   #######-->
   <Choose>
-    <When Condition="$(OS) == 'Unix'">
+    <When Condition="$(OS) == 'Unix' OR $(OS) == 'OSX'">
       <PropertyGroup>
+        <!-- Linux -->
         <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/GOG Games/Stardew Valley/game</GamePath>
         <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/.local/share/Steam/steamapps/common/Stardew Valley</GamePath>
-      </PropertyGroup>
-    </When>
-    <When Condition="$(OS) == 'OSX'">
-      <PropertyGroup>
+
+        <!-- Mac (may be 'Unix' or 'OSX') -->
         <GamePath Condition="!Exists('$(GamePath)')">/Applications/Stardew Valley.app/Contents/MacOS</GamePath>
         <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/Library/Application Support/Steam/steamapps/common/Stardew Valley/Contents/MacOS</GamePath>
       </PropertyGroup>
