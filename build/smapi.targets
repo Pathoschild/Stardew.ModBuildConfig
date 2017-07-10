@@ -32,6 +32,11 @@
         <GamePath Condition="!Exists('$(GamePath)')">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 413150', 'InstallLocation', null, RegistryView.Registry64, RegistryView.Registry32))</GamePath>
       </PropertyGroup>
     </When>
+    <Otherwise>
+      <PropertyGroup>
+        <GamePlatform></GamePlatform>
+      </PropertyGroup>
+    </Otherwise>
   </Choose>
 
   <!--######
