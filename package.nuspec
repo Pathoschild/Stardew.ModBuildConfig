@@ -2,16 +2,16 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>Pathoschild.Stardew.ModBuildConfig</id>
-    <version>1.6</version>
+    <version>1.6.1</version>
     <title>MSBuild config for Stardew Valley mods</title>
     <authors>Pathoschild</authors>
     <owners>Pathoschild</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <licenseUrl>https://github.com/Pathoschild/Stardew.ModBuildConfig/blob/1.6/LICENSE.txt</licenseUrl>
+    <licenseUrl>https://github.com/Pathoschild/Stardew.ModBuildConfig/blob/1.6.1/LICENSE.txt</licenseUrl>
     <projectUrl>https://github.com/Pathoschild/Stardew.ModBuildConfig#readme</projectUrl>
-    <iconUrl>https://raw.githubusercontent.com/Pathoschild/Stardew.ModBuildConfig/1.6/assets/nuget-icon.png</iconUrl>
+    <iconUrl>https://raw.githubusercontent.com/Pathoschild/Stardew.ModBuildConfig/1.6.1/assets/nuget-icon.png</iconUrl>
     <description>Automates the build configuration for crossplatform Stardew Valley SMAPI mods.</description>
-    <releaseNotes>SMAPI mods are now deployed automatically to your game folder if you set the 'DeployModFolderName' property; added a build error if a game folder is found, but it doesn't contain Stardew Valley or SMAPI.</releaseNotes>
+    <releaseNotes>Improved OS and game path detection.</releaseNotes>
   </metadata>
   <files>
     <file src="build/smapi.targets" target="build/Pathoschild.Stardew.ModBuildConfig.targets" />
