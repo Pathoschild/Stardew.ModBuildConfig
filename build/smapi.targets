@@ -9,41 +9,32 @@
   ## find platform + game path
   #######-->
   <Choose>
-    <When Condition="$(OS) == 'Unix'">
+    <When Condition="$(OS) == 'Unix' OR $(OS) == 'OSX'">
       <PropertyGroup>
-        <GamePlatform>Linux</GamePlatform>
+        <!-- Linux -->
         <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/GOG Games/Stardew Valley/game</GamePath>
         <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/.local/share/Steam/steamapps/common/Stardew Valley</GamePath>
-      </PropertyGroup>
-    </When>
-    <When Condition="$(OS) == 'OSX'">
-      <PropertyGroup>
-        <GamePlatform>Mac</GamePlatform>
+
+        <!-- Mac (may be 'Unix' or 'OSX') -->
         <GamePath Condition="!Exists('$(GamePath)')">/Applications/Stardew Valley.app/Contents/MacOS</GamePath>
         <GamePath Condition="!Exists('$(GamePath)')">$(HOME)/Library/Application Support/Steam/steamapps/common/Stardew Valley/Contents/MacOS</GamePath>
       </PropertyGroup>
     </When>
     <When Condition="$(OS) == 'Windows_NT'">
       <PropertyGroup>
-        <GamePlatform>Windows</GamePlatform>
         <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files (x86)\GalaxyClient\Games\Stardew Valley</GamePath>
         <GamePath Condition="!Exists('$(GamePath)')">C:\Program Files (x86)\Steam\steamapps\common\Stardew Valley</GamePath>
         <GamePath Condition="!Exists('$(GamePath)')">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\GOG.com\Games\1453375253', 'PATH', null, RegistryView.Registry32))</GamePath>
         <GamePath Condition="!Exists('$(GamePath)')">$([MSBuild]::GetRegistryValueFromView('HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 413150', 'InstallLocation', null, RegistryView.Registry64, RegistryView.Registry32))</GamePath>
       </PropertyGroup>
     </When>
-    <Otherwise>
-      <PropertyGroup>
-        <GamePlatform></GamePlatform>
-      </PropertyGroup>
-    </Otherwise>
   </Choose>
 
   <!--######
   ## configure build
   #######-->
   <Choose>
-    <When Condition="$(GamePlatform) == 'Windows'">
+    <When Condition="$(OS) == 'Windows_NT'">
       <!-- references -->
       <ItemGroup>
         <Reference Include="Microsoft.Xna.Framework, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
@@ -106,12 +97,12 @@
   #######-->
   <Target Name="BeforeBuild">
     <!-- show error for unknown platform -->
-    <Error Condition="'$(GamePlatform)' != 'Linux' AND '$(GamePlatform)' != 'Mac' AND '$(GamePlatform)' != 'Windows'" Text="The build config package doesn't recognise OS type '$(OS)' (mapped to game platform '$(GamePlatform)')." />
+    <Error Condition="'$(OS)' != 'OSX' AND '$(OS)' != 'Unix' AND '$(OS)' != 'Windows_NT'" Text="The build config package doesn't recognise OS type '$(OS)'." />
 
     <!-- if game path is invalid, show one user-friendly error instead of a slew of reference errors -->
     <Error Condition="!Exists('$(GamePath)')" Text="Failed to find the game install path. See https://github.com/Pathoschild/Stardew.ModBuildConfig#troubleshoot for help." />
-    <Error Condition="'$(GamePlatform)' == 'Windows' AND !Exists('$(GamePath)\Stardew Valley.exe')" Text="Found a game folder at $(GamePath), but it doesn't contain Stardew Valley. You should delete this folder if it's empty." />
-    <Error Condition="'$(GamePlatform)' != 'Windows' AND !Exists('$(GamePath)\StardewValley.exe')" Text="Found a game folder at $(GamePath), but it doesn't contain Stardew Valley. You should delete this folder if it's empty." />
+    <Error Condition="'$(OS)' == 'Windows_NT' AND !Exists('$(GamePath)\Stardew Valley.exe')" Text="Found a game folder at $(GamePath), but it doesn't contain Stardew Valley. You should delete this folder if it's empty." />
+    <Error Condition="'$(OS)' != 'Windows_NT' AND !Exists('$(GamePath)\StardewValley.exe')" Text="Found a game folder at $(GamePath), but it doesn't contain Stardew Valley. You should delete this folder if it's empty." />
     <Error Condition="!Exists('$(GamePath)\StardewModdingAPI.exe')" Text="Found a game folder at $(GamePath), but it doesn't contain SMAPI." />
   </Target>
 
