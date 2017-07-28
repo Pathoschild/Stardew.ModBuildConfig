@@ -36,12 +36,10 @@ You can copy your mod files into the `Mods` folder automatically each time you b
 need to do it manually:
 
 1. Edit your mod's `.csproj` file.
-2. Add this block under the `<Project` line:
+2. Add this block above the first `</PropertyGroup>` line:
 
      ```xml
-     <PropertyGroup>
-       <DeployModFolderName>$(MSBuildProjectName)</DeployModFolderName>
-     </PropertyGroup>
+     <DeployModFolderName>$(MSBuildProjectName)</DeployModFolderName>
      ```
 
 That's it! Each time you build, the files in `<game path>\Mods\<mod name>` will be updated with
@@ -61,6 +59,19 @@ the configuration automatically. To do it:
 
 This will deploy your mod files into the game folder, launch SMAPI, and attach a debugger
 automatically. Now you can step through your code, set breakpoints, etc.
+
+### Create release zips automatically (Windows-only)
+You can create the mod package automatically when you build:
+
+1. Edit your mod's `.csproj` file.
+2. Add this block above the first `</PropertyGroup>` line:
+
+     ```xml
+     <DeployModZipTo>$(SolutionDir)\_releases</DeployModZipTo>
+     ```
+
+That's it! Each time you build, the mod files will be zipped into `_releases\<mod name>.zip`. (You
+can change the value to save the zips somewhere else.)
 
 ## Troubleshoot
 ### "Failed to find the game install path"
