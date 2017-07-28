@@ -50,7 +50,7 @@ Notes:
 * To customise the folder name, just replace `$(MSBuildProjectName)` with the folder name you want.
 * If your project references another mod, make sure the reference is [_not_ marked 'copy local'](https://msdn.microsoft.com/en-us/library/t1zz5y8c(v=vs.100).aspx).
 
-### Debug into the mod code
+### Debug into the mod code (Windows Only)
 Stepping into your mod code when the game is running is straightforward, since this package injects
 the configuration automatically. To do it:
 
