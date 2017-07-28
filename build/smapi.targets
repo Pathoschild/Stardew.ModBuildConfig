@@ -190,9 +190,13 @@
       <DeployModZipTo Condition="'$(OS)' != 'Windows_NT'"><!--disable on Linux/Mac where CodeTaskFactory doesn't seem to be available--></DeployModZipTo>
     </PropertyGroup>
     <ItemGroup>
-      <BuildFiles Include="$(TargetDir)\**\*.*" />
-      <BuildFiles Include="$(ProjectDir)\manifest.json" Condition="'@(BuildFiles)' != '' AND EXISTS('$(ProjectDir)\manifest.json')" />
-      <I18nFiles Include="$(ProjectDir)\i18n\*.json" Condition="'@(BuildFiles)' != '' AND EXISTS('$(ProjectDir)\i18n')" />
+      <BuildFiles Include="$(TargetDir)\**\*.*" Exclude="$(TargetDir)\manifest.json;$(TargetDir)\i18n\**\*.*" />
+
+      <BuildFiles Include="$(ProjectDir)\manifest.json" Condition="'@(BuildFiles)' != ''" />
+      <BuildFiles Include="$(TargetDir)\manifest.json" Condition="'@(BuildFiles)' != '' AND !EXISTS('$(ProjectDir)\manifest.json')" />
+
+      <I18nFiles Include="$(ProjectDir)\i18n\*.json" Condition="'@(BuildFiles)' != ''" />
+      <I18nFiles Include="$(TargetDir)\i18n\*.json" Condition="'@(BuildFiles)' != '' AND !EXISTS('$(ProjectDir)\i18n')" />
     </ItemGroup>
 
     <!--validate paths-->
