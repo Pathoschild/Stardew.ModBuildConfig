@@ -1,6 +1,68 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--*********************************************
+  ** Define build tasks used below
+  **********************************************-->
   <!--######
-  ## import global settings
+  ## create a release zip file for a mod (CodeTaskFactory only available on Windows?)
+  #######-->
+  <UsingTask TaskName="CreateModReleaseZip" TaskFactory="CodeTaskFactory" AssemblyFile="$(MSBuildToolsPath)\Microsoft.Build.Tasks.v4.0.dll" Condition="'$(OS)' == 'Windows_NT'">
+    <ParameterGroup>
+      <ModName ParameterType="System.String" Required="true" />
+      <Files ParameterType="Microsoft.Build.Framework.ITaskItem[]" Required="true" />
+      <OutputFolderPath ParameterType="System.String" Required="true" />
+    </ParameterGroup>
+    <Task>
+      <Reference Include="System.IO" />
+      <Reference Include="System.IO.Compression" />
+      <Using Namespace="System.IO" />
+      <Using Namespace="System.IO.Compression" />
+      <Code Type="Fragment" Language="cs">
+        <![CDATA[
+        try
+        {
+           // create output path if needed
+           Directory.CreateDirectory(OutputFolderPath);
+
+           // clear old zip file if present
+           string zipPath = Path.Combine(OutputFolderPath, ModName + ".zip");
+           if (File.Exists(zipPath))
+              File.Delete(zipPath);
+
+           // create zip file
+           using (Stream zipStream = new FileStream(zipPath, FileMode.Create, FileAccess.Write))
+           using (ZipArchive archive = new ZipArchive(zipStream, ZipArchiveMode.Create))
+           {
+              foreach (ITaskItem file in Files)
+              {
+                 string filePath = file.ItemSpec;
+                 string entryName = file.GetMetadata("RecursiveDir") + file.GetMetadata("Filename") + file.GetMetadata("Extension");
+                 
+                 using (Stream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                 using (Stream fileStreamInZip = archive.CreateEntry(entryName).Open())
+                 {
+                    fileStream.CopyTo(fileStreamInZip);
+                 }
+              }
+           }
+           
+           return true;
+        }
+        catch (Exception ex)
+        {
+          Log.LogErrorFromException(ex);
+          return false;
+        }
+        ]]>
+      </Code>
+    </Task>
+  </UsingTask>
+
+
+  <!--*********************************************
+  ** Find the basic mod metadata
+  **********************************************-->
+  <!--######
+  ## import developer's custom settings (if any)
   #######-->
   <Import Condition="$(OS) != 'Windows_NT' AND Exists('$(HOME)\stardewvalley.targets')" Project="$(HOME)\stardewvalley.targets" />
   <Import Condition="$(OS) == 'Windows_NT' AND Exists('$(USERPROFILE)\stardewvalley.targets')" Project="$(USERPROFILE)\stardewvalley.targets" />
@@ -30,9 +92,10 @@
     </When>
   </Choose>
 
-  <!--######
-  ## configure build
-  #######-->
+
+  <!--*********************************************
+  ** Inject the assembly references and debugging configuration
+  **********************************************-->
   <Choose>
     <When Condition="$(OS) == 'Windows_NT'">
       <!-- references -->
@@ -44,6 +107,9 @@
           <Private>false</Private>
         </Reference>
         <Reference Include="Microsoft.Xna.Framework.Graphics, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
+          <Private>false</Private>
+        </Reference>
+        <Reference Include="Microsoft.Xna.Framework.Xact, Version=4.0.0.0, Culture=neutral, PublicKeyToken=842cf8be1de50553, processorArchitecture=x86">
           <Private>false</Private>
         </Reference>
         <Reference Include="Stardew Valley">
@@ -92,8 +158,12 @@
     </Otherwise>
   </Choose>
 
+
+  <!--*********************************************
+  ** Perform build logic
+  **********************************************-->
   <!--######
-  ## validate
+  ## validate metadata before build
   #######-->
   <Target Name="BeforeBuild">
     <!-- show error for unknown platform -->
@@ -107,27 +177,30 @@
   </Target>
 
   <!--######
-  ## deploy mod files on build
+  ## Deploy files after build
   #######-->
-  <Target Name="AfterBuild" Condition="'$(DeployModFolderName)' != ''">
-    <!--generate paths-->
+  <Target Name="AfterBuild" Condition="'$(DeployModFolderName)' != '' OR '$(DeployModZipTo)' != ''">
+    <!--collect file paths-->
     <PropertyGroup>
       <ModDeployPath>$(GamePath)\Mods\$(DeployModFolderName)</ModDeployPath>
-      <FallbackManifestPath>$(ProjectDir)\manifest.json</FallbackManifestPath>
+      <DeployModZipTo Condition="'$(OS)' != 'Windows_NT'"><!--disable on Linux/Mac where CodeTaskFactory doesn't seem to be available--></DeployModZipTo>
     </PropertyGroup>
     <ItemGroup>
       <BuildFiles Include="$(TargetDir)\**\*.*" />
-      <FallbackTranslationFiles Include="$(ProjectDir)\i18n\*.json" />
+      <BuildFiles Include="$(ProjectDir)\i18n\*.json" Condition="'@(BuildFiles)' != '' AND EXISTS('$(ProjectDir)\i18n')" />
+      <BuildFiles Include="$(ProjectDir)\manifest.json" Condition="'@(BuildFiles)' != '' AND EXISTS('$(ProjectDir)\manifest.json')" />
     </ItemGroup>
 
-    <!--validate-->
+    <!--validate paths-->
     <Error Text="Could not deploy mod automatically because no build output was found." Condition="'@(BuildFiles)' == ''" />
-    <Error Text="Could not deploy mod automatically because no manifest.json was found in the project or build output." Condition="!Exists('$(TargetDir)\manifest.json') AND !Exists('$(FallbackManifestPath)')" />
+    <Error Text="Could not deploy mod automatically because no manifest.json was found in the project or build output." Condition="!Exists('$(TargetDir)\manifest.json') AND !Exists('$(ProjectDir)\manifest.json')" />
 
-    <!-- copy mod files -->
-    <Message Text="Deploying mod to $(ModDeployPath)..." Importance="high" />
-    <Copy SourceFiles="@(BuildFiles)" DestinationFolder="$(ModDeployPath)\%(RecursiveDir)" SkipUnchangedFiles="true" />
-    <Copy SourceFiles="$(FallbackManifestPath)" DestinationFolder="$(ModDeployPath)" Condition="!Exists('$(TargetDir)\manifest.json')" />
-    <Copy SourceFiles="@(FallbackTranslationFiles)" DestinationFolder="$(ModDeployPath)\i18n\%(RecursiveDir)" Condition="!Exists('$(TargetDir)\i18n')" />
+    <!-- copy mod files into mod folder if <DeployModFolderName> property is set -->
+    <Message Text="Deploying mod to $(ModDeployPath)..." Importance="high" Condition="'$(DeployModFolderName)' != ''" />
+    <Copy SourceFiles="@(BuildFiles)" DestinationFolder="$(ModDeployPath)\%(RecursiveDir)" SkipUnchangedFiles="true" Condition="'$(DeployModFolderName)' != ''" />
+
+    <!-- create release zip if <DeployModZipTo> property is set -->
+    <Message Text="Generating mod release at $(DeployModZipTo)\$(MSBuildProjectName).zip..." Importance="high" Condition="'$(DeployModZipTo)' != ''" />
+    <CreateModReleaseZip ModName="$(MSBuildProjectName)" Files="@(BuildFiles)" OutputFolderPath="$(DeployModZipTo)" Condition="'$(DeployModZipTo)' != ''" />
   </Target>
 </Project>
