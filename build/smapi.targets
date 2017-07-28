@@ -34,9 +34,13 @@
            {
               foreach (ITaskItem file in Files)
               {
+                 // get file info
                  string filePath = file.ItemSpec;
                  string entryName = file.GetMetadata("RecursiveDir") + file.GetMetadata("Filename") + file.GetMetadata("Extension");
-                 
+                 if (new FileInfo(filePath).Directory.Name.Equals("i18n", StringComparison.InvariantCultureIgnoreCase))
+                    entryName = Path.Combine("i18n", entryName);
+
+                 // add to zip
                  using (Stream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
                  using (Stream fileStreamInZip = archive.CreateEntry(entryName).Open())
                  {
@@ -186,9 +190,13 @@
       <DeployModZipTo Condition="'$(OS)' != 'Windows_NT'"><!--disable on Linux/Mac where CodeTaskFactory doesn't seem to be available--></DeployModZipTo>
     </PropertyGroup>
     <ItemGroup>
-      <BuildFiles Include="$(TargetDir)\**\*.*" />
-      <BuildFiles Include="$(ProjectDir)\i18n\*.json" Condition="'@(BuildFiles)' != '' AND EXISTS('$(ProjectDir)\i18n')" />
-      <BuildFiles Include="$(ProjectDir)\manifest.json" Condition="'@(BuildFiles)' != '' AND EXISTS('$(ProjectDir)\manifest.json')" />
+      <BuildFiles Include="$(TargetDir)\**\*.*" Exclude="$(TargetDir)\manifest.json;$(TargetDir)\i18n\**\*.*" />
+
+      <BuildFiles Include="$(ProjectDir)\manifest.json" Condition="'@(BuildFiles)' != ''" />
+      <BuildFiles Include="$(TargetDir)\manifest.json" Condition="'@(BuildFiles)' != '' AND !EXISTS('$(ProjectDir)\manifest.json')" />
+
+      <I18nFiles Include="$(ProjectDir)\i18n\*.json" Condition="'@(BuildFiles)' != ''" />
+      <I18nFiles Include="$(TargetDir)\i18n\*.json" Condition="'@(BuildFiles)' != '' AND !EXISTS('$(ProjectDir)\i18n')" />
     </ItemGroup>
 
     <!--validate paths-->
@@ -198,9 +206,10 @@
     <!-- copy mod files into mod folder if <DeployModFolderName> property is set -->
     <Message Text="Deploying mod to $(ModDeployPath)..." Importance="high" Condition="'$(DeployModFolderName)' != ''" />
     <Copy SourceFiles="@(BuildFiles)" DestinationFolder="$(ModDeployPath)\%(RecursiveDir)" SkipUnchangedFiles="true" Condition="'$(DeployModFolderName)' != ''" />
+    <Copy SourceFiles="@(I18nFiles)" DestinationFolder="$(ModDeployPath)\i18n" SkipUnchangedFiles="true" Condition="'$(DeployModFolderName)' != ''" />
 
     <!-- create release zip if <DeployModZipTo> property is set -->
     <Message Text="Generating mod release at $(DeployModZipTo)\$(MSBuildProjectName).zip..." Importance="high" Condition="'$(DeployModZipTo)' != ''" />
-    <CreateModReleaseZip ModName="$(MSBuildProjectName)" Files="@(BuildFiles)" OutputFolderPath="$(DeployModZipTo)" Condition="'$(DeployModZipTo)' != ''" />
+    <CreateModReleaseZip ModName="$(MSBuildProjectName)" Files="@(BuildFiles);@(I18nFiles)" OutputFolderPath="$(DeployModZipTo)" Condition="'$(DeployModZipTo)' != ''" />
   </Target>
 </Project>
