@@ -14,8 +14,10 @@
     <Task>
       <Reference Include="System.IO" />
       <Reference Include="System.IO.Compression" />
+      <Reference Include="System.Web.Extensions"/>
       <Using Namespace="System.IO" />
       <Using Namespace="System.IO.Compression" />
+      <Using Namespace="System.Web.Script.Serialization"/>
       <Code Type="Fragment" Language="cs">
         <![CDATA[
         try
