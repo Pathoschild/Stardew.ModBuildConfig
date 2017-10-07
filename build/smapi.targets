@@ -23,8 +23,29 @@
            // create output path if needed
            Directory.CreateDirectory(OutputFolderPath);
 
+           // Get the file JSON string
+           string json = "";
+           foreach(ITaskItem file in Files)
+           {
+              if(Path.GetFileName(file.ItemSpec).ToLower() != "manifest.json")
+                continue;
+              json = File.ReadAllText(file.ItemSpec);
+              break;
+           }
+           
+           // Serialize the manifest json into a data object, then get a version object from that.
+           IDictionary<string, object> data = (IDictionary<string, object>)new JavaScriptSerializer().DeserializeObject(json);
+           IDictionary<string, object> version = (IDictionary<string, object>)data["Version"];
+           
+           // Store our version numbers for ease of use
+           int major = (int)version["MajorVersion"];
+           int minor = (int)version["MinorVersion"];
+           int patch = (int)version["PatchVersion"];
+           
+           string fileName = String.Format("{0}-{1}.{2}.{3}.zip", ModName, major, minor, patch);
+           
            // clear old zip file if present
-           string zipPath = Path.Combine(OutputFolderPath, ModName + ".zip");
+           string zipPath = Path.Combine(OutputFolderPath, fileName);
            if (File.Exists(zipPath))
               File.Delete(zipPath);
 
