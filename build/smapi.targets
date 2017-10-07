@@ -36,7 +36,7 @@
               {
                  // get file info
                  string filePath = file.ItemSpec;
-                 string entryName = file.GetMetadata("RecursiveDir") + file.GetMetadata("Filename") + file.GetMetadata("Extension");
+                 string entryName = ModName + '/' + file.GetMetadata("RecursiveDir") + file.GetMetadata("Filename") + file.GetMetadata("Extension");
                  if (new FileInfo(filePath).Directory.Name.Equals("i18n", StringComparison.InvariantCultureIgnoreCase))
                     entryName = Path.Combine("i18n", entryName);
 
