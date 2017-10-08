@@ -1,6 +1,6 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <!--*********************************************
-  ** Define build tasks used below
+  ** Define build tasks
   **********************************************-->
   <!--######
   ## create a release zip file for a mod (CodeTaskFactory only available on Windows?)
@@ -15,69 +15,97 @@
       <Reference Include="System.IO" />
       <Reference Include="System.IO.Compression" />
       <Reference Include="System.Web.Extensions"/>
-      <Using Namespace="System.IO" />
-      <Using Namespace="System.IO.Compression" />
-      <Using Namespace="System.Web.Script.Serialization"/>
-      <Code Type="Fragment" Language="cs">
+      <Code Type="Class" Language="cs">
         <![CDATA[
-        try
+        using System;
+        using System.Collections.Generic;
+        using System.IO;
+        using System.IO.Compression;
+        using System.Web.Script.Serialization;
+        using Microsoft.Build.Framework;
+        using Microsoft.Build.Utilities;
+
+        /// <summary>A build task which packs mod files into a conventional release zip.</summary>
+        public class CreateModReleaseZip : Task, ITask
         {
-           // create output path if needed
-           Directory.CreateDirectory(OutputFolderPath);
+           /*********
+           ** Accessors
+           *********/
+           /// <summary>The mod files to pack.</summary>
+           public ITaskItem[] Files { get; set; }
 
-           // Get the file JSON string
-           string json = "";
-           foreach(ITaskItem file in Files)
-           {
-              if(Path.GetFileName(file.ItemSpec).ToLower() != "manifest.json")
-                continue;
-              json = File.ReadAllText(file.ItemSpec);
-              break;
-           }
-           
-           // Serialize the manifest json into a data object, then get a version object from that.
-           IDictionary<string, object> data = (IDictionary<string, object>)new JavaScriptSerializer().DeserializeObject(json);
-           IDictionary<string, object> version = (IDictionary<string, object>)data["Version"];
-           
-           // Store our version numbers for ease of use
-           int major = (int)version["MajorVersion"];
-           int minor = (int)version["MinorVersion"];
-           int patch = (int)version["PatchVersion"];
-           
-           string fileName = String.Format("{0}-{1}.{2}.{3}.zip", ModName, major, minor, patch);
-           
-           // clear old zip file if present
-           string zipPath = Path.Combine(OutputFolderPath, fileName);
-           if (File.Exists(zipPath))
-              File.Delete(zipPath);
+           /// <summary>The name of the mod.</param>
+           public string ModName { get; set; }
 
-           // create zip file
-           using (Stream zipStream = new FileStream(zipPath, FileMode.Create, FileAccess.Write))
-           using (ZipArchive archive = new ZipArchive(zipStream, ZipArchiveMode.Create))
+           /// <summary>The absolute or relative path to the folder which should contain the generated zip file.</summary>
+           public string OutputFolderPath { get; set; }
+
+
+           /*********
+           ** Public methods
+           *********/
+           public override bool Execute()
            {
-              foreach (ITaskItem file in Files)
+              try
               {
-                 // get file info
-                 string filePath = file.ItemSpec;
-                 string entryName = ModName + '/' + file.GetMetadata("RecursiveDir") + file.GetMetadata("Filename") + file.GetMetadata("Extension");
-                 if (new FileInfo(filePath).Directory.Name.Equals("i18n", StringComparison.InvariantCultureIgnoreCase))
-                    entryName = Path.Combine("i18n", entryName);
+                 // create output path if needed
+                 Directory.CreateDirectory(OutputFolderPath);
 
-                 // add to zip
-                 using (Stream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                 using (Stream fileStreamInZip = archive.CreateEntry(entryName).Open())
+                 // Get the file JSON string
+                 string json = "";
+                 foreach(ITaskItem file in Files)
                  {
-                    fileStream.CopyTo(fileStreamInZip);
+                    if(Path.GetFileName(file.ItemSpec).ToLower() != "manifest.json")
+                       continue;
+                    json = File.ReadAllText(file.ItemSpec);
+                    break;
                  }
+
+                 // Serialize the manifest json into a data object, then get a version object from that.
+                 IDictionary<string, object> data = (IDictionary<string, object>)new JavaScriptSerializer().DeserializeObject(json);
+                 IDictionary<string, object> version = (IDictionary<string, object>)data["Version"];
+
+                 // Store our version numbers for ease of use
+                 int major = (int)version["MajorVersion"];
+                 int minor = (int)version["MinorVersion"];
+                 int patch = (int)version["PatchVersion"];
+
+                 string fileName = String.Format("{0}-{1}.{2}.{3}.zip", ModName, major, minor, patch);
+
+                 // clear old zip file if present
+                 string zipPath = Path.Combine(OutputFolderPath, fileName);
+                 if (File.Exists(zipPath))
+                    File.Delete(zipPath);
+
+                 // create zip file
+                 using (Stream zipStream = new FileStream(zipPath, FileMode.Create, FileAccess.Write))
+                 using (ZipArchive archive = new ZipArchive(zipStream, ZipArchiveMode.Create))
+                 {
+                    foreach (ITaskItem file in Files)
+                    {
+                       // get file info
+                       string filePath = file.ItemSpec;
+                       string entryName = ModName + '/' + file.GetMetadata("RecursiveDir") + file.GetMetadata("Filename") + file.GetMetadata("Extension");
+                       if (new FileInfo(filePath).Directory.Name.Equals("i18n", StringComparison.InvariantCultureIgnoreCase))
+                          entryName = Path.Combine("i18n", entryName);
+
+                       // add to zip
+                       using (Stream fileStream = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                       using (Stream fileStreamInZip = archive.CreateEntry(entryName).Open())
+                       {
+                          fileStream.CopyTo(fileStreamInZip);
+                       }
+                     }
+                 }
+
+                 return true;
+              }
+              catch (Exception ex)
+              {
+                 Log.LogErrorFromException(ex);
+                 return false;
               }
            }
-           
-           return true;
-        }
-        catch (Exception ex)
-        {
-          Log.LogErrorFromException(ex);
-          return false;
         }
         ]]>
       </Code>
